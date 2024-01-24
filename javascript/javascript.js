@@ -1,4 +1,5 @@
 const DEFAULT_DISPLAY_VALUE = '0';
+const EMPTY_DISPLAY_VALUE = '';
 
 let expression = {
    operand1: undefined,
@@ -9,6 +10,8 @@ let displayVal = DEFAULT_DISPLAY_VALUE;
 
 const displayText = document.querySelector('#display-text'); 
 const numberBtns = document.querySelectorAll('.number-btn');
+const operatorBtns = document.querySelectorAll('.operator-btn');
+const equalBtn = document.querySelector('#equal-btn');
 const clearBtn = document.querySelector('#clear-btn');
 
 // Button event listeners
@@ -17,6 +20,22 @@ numberBtns.forEach((button) => {
       let numVal = button.textContent;
       populateDisplay(numVal);
    });
+})
+
+operatorBtns.forEach((button) => {
+   button.addEventListener('click', () => {
+      expression.operator = button.textContent;
+      if (expression.operand1 === undefined) {
+         expression.operand1 = +displayVal;
+         displayVal = EMPTY_DISPLAY_VALUE;
+      }
+   });
+})
+
+equalBtn.addEventListener('click', () => {
+   expression.operand2 = +displayVal;
+   displayVal = operate(expression.operator, expression.operand1, expression.operand2);
+   displayText.textContent = displayVal;
 })
 
 clearBtn.addEventListener('click', ()  => {
@@ -29,6 +48,8 @@ clearBtn.addEventListener('click', ()  => {
    displayText.textContent = displayVal;
 });
 
+
+
 function populateDisplay(num) {
    if (displayVal == DEFAULT_DISPLAY_VALUE && expression.operand1 === undefined) {
       displayVal = num;
@@ -38,7 +59,6 @@ function populateDisplay(num) {
    }
    displayText.textContent = displayVal;
 }
-
 
 function operate(operator, operand1, operand2) {
    switch (operator) {
