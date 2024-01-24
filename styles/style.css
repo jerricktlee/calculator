@@ -16,7 +16,7 @@ body {
 .calculator-body {
    background-color: rgb(76, 82, 89);
    min-width: 400px;
-   min-height: 550px;
+   min-height: 575px;
    display: flex;
    flex-direction: column;
    align-items: center;
@@ -25,7 +25,7 @@ body {
 .calculator-display {
    /* background-color: rgb(154, 205, 51); */
    background-color: white;
-   height: 65px;
+   height: 80px;
    width: 365px;
    margin: 10px;
    display: flex;
@@ -35,7 +35,7 @@ body {
 }
 
 #display-text {
-   font-size: 2.75rem;
+   font-size: 3.5rem;
 }
 
 .calculator-button-container {
@@ -57,7 +57,7 @@ body {
 button {
    height: 82px;
    width: 82px;
-   font-size: 1.5rem;
+   font-size: 1.75rem;
    border-radius: 10px;
    color: white;
 }
@@ -72,7 +72,8 @@ button {
 #del-btn,
 #sign-change-btn,
 #equal-btn {
-   background-color: rgb(254, 166, 58);
+   background-color: rgb(252, 143, 34);
+   /* background-color: rgb(254, 166, 58); */
 }
 
 #zero-btn {
