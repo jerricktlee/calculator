@@ -1,43 +1,57 @@
-let operand1;
-let operand2;
-let operator;
-let displayVal = '0';
+const DEFAULT_DISPLAY_VALUE = '0';
+
+let expression = {
+   operand1: undefined,
+   operand2: undefined,
+   operator: undefined,
+};
+let displayVal = DEFAULT_DISPLAY_VALUE;
 
 const displayText = document.querySelector('#display-text'); 
 const numberBtns = document.querySelectorAll('.number-btn');
+const clearBtn = document.querySelector('#clear-btn');
 
+// Button event listeners
 numberBtns.forEach((button) => {
    button.addEventListener('click', () => {
       let numVal = button.textContent;
-      if (displayVal == '0') {
-         displayVal = numVal;
-         displayText.textContent = displayVal;
-      }
-      else {
-         displayVal += numVal;
-         displayText.textContent = displayVal;
-      }
-
+      populateDisplay(numVal);
    });
 })
+
+clearBtn.addEventListener('click', ()  => {
+   // Clears expression memory
+   expression.operand1 = undefined;
+   expression.operand2 = undefined;
+   expression.operator = undefined;
+   
+   displayVal = DEFAULT_DISPLAY_VALUE;
+   displayText.textContent = displayVal;
+});
+
+function populateDisplay(num) {
+   if (displayVal == DEFAULT_DISPLAY_VALUE && expression.operand1 === undefined) {
+      displayVal = num;
+   }
+   else {
+      displayVal += num;
+   }
+   displayText.textContent = displayVal;
+}
+
 
 function operate(operator, operand1, operand2) {
    switch (operator) {
       case '+':
          return add(operand1, operand2); 
-         break;
       case '-':
          return subract(operand1, operand2);
-         break;
       case '*': 
          return multiply(operand1, operand2);
-         break;
       case '/':
          return divide(operand1, operand2); 
-         break;
       default:
          return;
-         break;
    }
 }
 
