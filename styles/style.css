@@ -28,14 +28,16 @@ body {
    height: 80px;
    width: 365px;
    margin: 10px;
+   padding: 1px 5px;
    display: flex;
    justify-content: end;
    align-items: center;
-   padding: 1px 5px;
+   overflow: hidden;
 }
 
 #display-text {
-   font-size: 3.5rem;
+   font-size: 4rem;
+   padding: 0 5px;
 }
 
 .calculator-button-container {
