@@ -1,10 +1,12 @@
 const DEFAULT_DISPLAY_VALUE = '0';
 const EMPTY_DISPLAY_VALUE = '';
+const MAX_DISPLAY_LENGTH = 11;
 
 let expression = {
    operand1: undefined,
    operand2: undefined,
    operator: undefined,
+   prevResult: undefined,
 };
 let displayVal = DEFAULT_DISPLAY_VALUE;
 
@@ -25,17 +27,27 @@ numberBtns.forEach((button) => {
 operatorBtns.forEach((button) => {
    button.addEventListener('click', () => {
       expression.operator = button.textContent;
-      if (expression.operand1 === undefined) {
-         expression.operand1 = +displayVal;
+      if (expression.operand1 === undefined){
+         if (expression.prevResult === undefined) {
+            expression.operand1 = +displayVal;
+         }
+         else {
+            expression.operand1 = expression.prevResult;
+         }
          displayVal = EMPTY_DISPLAY_VALUE;
-      }
+      } 
    });
 })
 
 equalBtn.addEventListener('click', () => {
    expression.operand2 = +displayVal;
-   displayVal = operate(expression.operator, expression.operand1, expression.operand2);
-   displayText.textContent = displayVal;
+   if (operate(expression.operator, expression.operand1, expression.operand2)) {
+      displayText.textContent = displayVal;
+      expression.operand1 = undefined;
+      expression.operand2 = undefined;
+      expression.operator = undefined;
+      expression.prevResult = displayVal;
+   }
 })
 
 clearBtn.addEventListener('click', ()  => {
@@ -43,7 +55,8 @@ clearBtn.addEventListener('click', ()  => {
    expression.operand1 = undefined;
    expression.operand2 = undefined;
    expression.operator = undefined;
-   
+   expression.prevResult = undefined;
+
    displayVal = DEFAULT_DISPLAY_VALUE;
    displayText.textContent = displayVal;
 });
@@ -61,18 +74,28 @@ function populateDisplay(num) {
 }
 
 function operate(operator, operand1, operand2) {
+   let result;
    switch (operator) {
       case '+':
-         return add(operand1, operand2); 
+         result = add(operand1, operand2); 
+         break;
       case '-':
-         return subract(operand1, operand2);
+         result = subract(operand1, operand2);
+         break;
       case '*': 
-         return multiply(operand1, operand2);
+         result = multiply(operand1, operand2);
+         break;
       case '/':
-         return divide(operand1, operand2); 
+         result = divide(operand1, operand2);
+         break; 
       default:
-         return;
+         return false;
    }
+   if (result === NaN) {
+      return false;
+   }
+   displayVal = result;
+   return true;
 }
 
 // All basic math operators
@@ -91,3 +114,14 @@ function multiply(operand1, operand2) {
 function divide(operand1, operand2) {
    return operand1 / operand2;
 }
+
+/* Notes:
+Things to work on:
+
+Need to truncate and limit the numbers
+9 decimal places
+
+After the first calculation:
+- New numbers should reset the display
+- Pressing another operator should store the current displayVal as operand1 val.
+*/
