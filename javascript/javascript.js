@@ -20,6 +20,7 @@ const operatorBtns = document.querySelectorAll('.operator-btn');
 const equalBtn = document.querySelector('#equal-btn');
 const clearBtn = document.querySelector('#clear-btn');
 const decimalBtn = document.querySelector('#decimal-btn');
+const delBtn = document.querySelector('#del-btn');
 
 // Button event listeners
 numberBtns.forEach((button) => {
@@ -74,6 +75,13 @@ clearBtn.addEventListener('click', ()  => {
 decimalBtn.addEventListener('click', () => {
    populateDisplay(decimalBtn.textContent);
    decimalBtn.disabled = true;
+})
+
+delBtn.addEventListener('click', () => {
+   if (!resetOn) {
+      displayVal = displayVal.toString().slice(0, -1);
+      displayText.textContent = displayVal;
+   }
 })
 
 function populateDisplay(num) {
