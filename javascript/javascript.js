@@ -12,7 +12,6 @@ let expression = {
 
 let displayVal = DEFAULT_DISPLAY_VALUE;
 let resetOn = false;
-// let decimalOn = false;
 
 const displayText = document.querySelector('#display-text'); 
 const numberBtns = document.querySelectorAll('.number-btn');
@@ -21,6 +20,42 @@ const equalBtn = document.querySelector('#equal-btn');
 const clearBtn = document.querySelector('#clear-btn');
 const decimalBtn = document.querySelector('#decimal-btn');
 const delBtn = document.querySelector('#del-btn');
+
+
+// Keyboard event Listeners
+window.addEventListener('keydown', handleKeyboardInput);
+
+function handleKeyboardInput(e) {
+   if (e.key >= 0 && e.key <= 9) {
+      populateDisplay(e.key);
+   }
+   if (e.key === '.' && !decimalBtn.disabled) {
+      populateDisplay(decimalBtn.textContent);
+      decimalBtn.disabled = true;
+   }
+   if (e.key === '+') {
+      handleOperateBtn('+');
+   }
+   if (e.key === '-') {
+      handleOperateBtn('-');
+   }
+   if (e.key === '*') {
+      handleOperateBtn('*');
+   }
+   if (e.key === '/') {
+      handleOperateBtn('/');
+   }
+   if (e.key === '=' || e.key === 'Enter') {
+      handleEqualBtn();
+   }
+   if (e.key === 'Delete' || e.key === 'Backspace') {
+      handleDeleteBtn();
+   }
+   if (e.key === 'Escape') {
+      clear();
+      displayText.textContent = displayVal;
+   }
+}
 
 // Button event listeners
 numberBtns.forEach((button) => {
@@ -31,40 +66,10 @@ numberBtns.forEach((button) => {
 })
 
 operatorBtns.forEach((button) => {
-   button.addEventListener('click', () => {
-      if (expression.operator !== undefined) {
-         expression.operand2 = +displayVal;
-         if (operate(expression.operator, expression.operand1, expression.operand2)) {
-            updateCalc();
-            expression.operand1 = +displayVal;
-            expression.operator = button.textContent;
-         }
-      } else {
-         expression.operator = button.textContent;
-         if (expression.operand1 === undefined){
-            if (expression.prevResult === undefined) {
-               expression.operand1 = +displayVal;
-            }
-            else {
-               // memory component, allows most recent result to be used
-               expression.operand1 = expression.prevResult;
-            }
-            resetOn = true;
-            decimalBtn.disabled = false;
-         }
-      }
-   });
-})
+   button.addEventListener('click', () => handleOperateBtn(button.textContent));
+});
 
-equalBtn.addEventListener('click', () => {
-   if (expression.operand1 === undefined || expression.operator === undefined) { 
-      return; 
-   }
-   expression.operand2 = +displayVal;
-   if (operate(expression.operator, expression.operand1, expression.operand2)) {
-      updateCalc();
-   }
-})
+equalBtn.addEventListener('click', () => handleEqualBtn());
 
 clearBtn.addEventListener('click', ()  => {
    // Clears expression memory
@@ -77,12 +82,7 @@ decimalBtn.addEventListener('click', () => {
    decimalBtn.disabled = true;
 })
 
-delBtn.addEventListener('click', () => {
-   if (!resetOn) {
-      displayVal = displayVal.toString().slice(0, -1);
-      displayText.textContent = displayVal;
-   }
-})
+delBtn.addEventListener('click', () => handleDeleteBtn());
 
 function populateDisplay(num) {
    if (resetOn) {
@@ -140,6 +140,52 @@ function clear() {
    expression.operator = undefined;
    expression.prevResult = undefined;
    displayVal = DEFAULT_DISPLAY_VALUE;
+   decimalBtn.disabled = false;
+}
+
+function handleOperateBtn(operator) {
+   if (expression.operator !== undefined) {
+      expression.operand2 = +displayVal;
+      if (operate(expression.operator, expression.operand1, expression.operand2)) {
+         updateCalc();
+         expression.operand1 = +displayVal;
+         expression.operator = operator;
+      }
+   } else {
+      expression.operator = operator;
+      if (expression.operand1 === undefined){
+         if (expression.prevResult === undefined) {
+            expression.operand1 = +displayVal;
+         }
+         else {
+            // memory component, allows most recent result to be used
+            expression.operand1 = expression.prevResult;
+         }
+         resetOn = true;
+         decimalBtn.disabled = false;
+      }
+   }
+}
+
+function handleEqualBtn() {
+   if (expression.operand1 === undefined || expression.operator === undefined) { 
+      return; 
+   }
+   expression.operand2 = +displayVal;
+   if (operate(expression.operator, expression.operand1, expression.operand2)) {
+      updateCalc();
+   }
+}
+
+function handleDeleteBtn() {
+   if (!resetOn && displayVal.toString().length > 0) {
+      deletedVal = displayVal.toString().slice(-1);
+      if (deletedVal === '.') {
+         decimalBtn.disabled = false;
+      }
+      displayVal = displayVal.toString().slice(0, -1);
+      displayText.textContent = displayVal;
+   }
 }
 
 function operate(operator, operand1, operand2) {
