@@ -1,6 +1,7 @@
 const DEFAULT_DISPLAY_VALUE = '0';
 const EMPTY_DISPLAY_VALUE = '';
 const MAX_DISPLAY_LENGTH = 11;
+const ZERO_DIVISOR = 0;
 
 let expression = {
    operand1: undefined,
@@ -66,8 +67,6 @@ clearBtn.addEventListener('click', ()  => {
    displayText.textContent = displayVal;
 });
 
-
-
 function populateDisplay(num) {
    if (resetOn) {
       displayVal = EMPTY_DISPLAY_VALUE;
@@ -80,13 +79,35 @@ function populateDisplay(num) {
       displayVal = num;
    }
    else {
-      displayVal += num;
+      if (displayVal.toString().length < MAX_DISPLAY_LENGTH) {
+         displayVal += num;
+      }
+      else {
+         clear();
+         displayText.textContent = 'OVERFLOW!';
+         return;
+      }
+   }
+   displayText.textContent = displayVal;
+}
+
+function formatDisplay(num) {
+   let numIntegerDigits = Math.max(Math.floor(Math.log10(Math.abs(+num))), 0) + 1;
+   if (numIntegerDigits > MAX_DISPLAY_LENGTH) {
+      clear();
+      displayText.textContent = 'OVERFLOW!';
+      return;
+   }
+   let numDigitsAvailable = MAX_DISPLAY_LENGTH - numIntegerDigits;
+   if (numDigitsAvailable > 0) {
+      displayVal = Math.round((+displayVal + Number.EPSILON) * (10 ** numDigitsAvailable)) / (10 ** numDigitsAvailable);
    }
    displayText.textContent = displayVal;
 }
 
 function updateCalc() {
-   displayText.textContent = displayVal;
+   // displayText.textContent = displayVal;
+   formatDisplay(displayVal);
    expression.operand1 = undefined;
    expression.operand2 = undefined;
    expression.operator = undefined;
@@ -115,7 +136,7 @@ function operate(operator, operand1, operand2) {
          result = multiply(operand1, operand2);
          break;
       case '/':
-         if (operand2 === 0) {
+         if (operand2 === ZERO_DIVISOR) {
             clear();
             displayText.textContent = "N/A";
             return;
@@ -148,10 +169,3 @@ function multiply(operand1, operand2) {
 function divide(operand1, operand2) {
    return operand1 / operand2;
 }
-
-/* Notes:
-Things to work on:
-
-Need to truncate and limit the numbers
-9 decimal places
-*/
