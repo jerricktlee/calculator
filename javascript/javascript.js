@@ -16,6 +16,10 @@ let resetOn = false;
 const displayText = document.querySelector('#display-text'); 
 const numberBtns = document.querySelectorAll('.number-btn');
 const operatorBtns = document.querySelectorAll('.operator-btn');
+const addBtn = document.querySelector('#add-btn');
+const subBtn = document.querySelector('#sub-btn');
+const mulBtn = document.querySelector('#mul-btn');
+const divBtn = document.querySelector('#div-btn');
 const equalBtn = document.querySelector('#equal-btn');
 const clearBtn = document.querySelector('#clear-btn');
 const decimalBtn = document.querySelector('#decimal-btn');
@@ -81,6 +85,7 @@ clearBtn.addEventListener('click', ()  => {
 decimalBtn.addEventListener('click', () => {
    populateDisplay(decimalBtn.textContent);
    decimalBtn.disabled = true;
+   toggleDecimalColor(decimalBtn.disabled);
 })
 
 delBtn.addEventListener('click', () => handleDeleteBtn());
@@ -139,19 +144,23 @@ function updateCalc() {
    formatDisplay(displayVal);
    expression.operand1 = undefined;
    expression.operand2 = undefined;
+   toggleOperatorColor(expression.operator, false);
    expression.operator = undefined;
    expression.prevResult = +displayVal;
    resetOn = true;
    decimalBtn.disabled = false;
+   toggleDecimalColor(decimalBtn.disabled);
 }
 
 function clear() {
    expression.operand1 = undefined;
    expression.operand2 = undefined;
+   toggleOperatorColor(expression.operator, false);
    expression.operator = undefined;
    expression.prevResult = undefined;
    displayVal = DEFAULT_DISPLAY_VALUE;
    decimalBtn.disabled = false;
+   toggleDecimalColor(decimalBtn.disabled);
 }
 
 function handleOperateBtn(operator) {
@@ -161,9 +170,11 @@ function handleOperateBtn(operator) {
          updateCalc();
          expression.operand1 = +displayVal;
          expression.operator = operator;
+         toggleOperatorColor(expression.operator, true);
       }
    } else {
       expression.operator = operator;
+      toggleOperatorColor(expression.operator, true);
       if (expression.operand1 === undefined){
          if (expression.prevResult === undefined) {
             expression.operand1 = +displayVal;
@@ -174,6 +185,7 @@ function handleOperateBtn(operator) {
          }
          resetOn = true;
          decimalBtn.disabled = false;
+         toggleDecimalColor(decimalBtn.disabled);
       }
    }
 }
@@ -193,6 +205,7 @@ function handleDeleteBtn() {
       deletedVal = displayVal.toString().slice(-1);
       if (deletedVal === '.') {
          decimalBtn.disabled = false;
+         toggleDecimalColor(decimalBtn.disabled);
       }
       displayVal = displayVal.toString().slice(0, -1);
       displayText.textContent = displayVal;
@@ -244,4 +257,39 @@ function multiply(operand1, operand2) {
 
 function divide(operand1, operand2) {
    return operand1 / operand2;
+}
+
+function toggleOperatorColor(operator, toggle) {
+   let operatorBtn;
+   switch (operator) {
+      case '+':
+         operatorBtn = addBtn;
+         break;
+      case '-':
+         operatorBtn = subBtn;
+         break;
+      case '*': 
+         operatorBtn = mulBtn;
+         break;
+      case '/':
+         operatorBtn = divBtn;
+         break; 
+      default:
+         return;
+   }
+   if (toggle) {
+      operatorBtn.style.backgroundColor = "rgb(254, 166, 58)";
+   }
+   else {
+      operatorBtn.style.backgroundColor = "rgb(252, 143, 34)";
+   }
+}
+
+function toggleDecimalColor(toggle) {
+   if (toggle) {
+      decimalBtn.style.backgroundColor = "rgb(90, 226, 253)";
+   }
+   else {
+      decimalBtn.style.backgroundColor = "rgb(74, 168, 249)";
+   }
 }

@@ -66,7 +66,7 @@ button {
 
 .number-btn,
 #decimal-btn {
-   background-color: rgb(90, 226, 253);
+   background-color: rgb(74, 168, 249);
 }
 
 .operator-btn,
@@ -75,7 +75,6 @@ button {
 #sign-change-btn,
 #equal-btn {
    background-color: rgb(252, 143, 34);
-   /* background-color: rgb(254, 166, 58); */
 }
 
 #zero-btn {
