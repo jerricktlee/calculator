@@ -9,14 +9,17 @@ let expression = {
    operator: undefined,
    prevResult: undefined,
 };
+
 let displayVal = DEFAULT_DISPLAY_VALUE;
 let resetOn = false;
+// let decimalOn = false;
 
 const displayText = document.querySelector('#display-text'); 
 const numberBtns = document.querySelectorAll('.number-btn');
 const operatorBtns = document.querySelectorAll('.operator-btn');
 const equalBtn = document.querySelector('#equal-btn');
 const clearBtn = document.querySelector('#clear-btn');
+const decimalBtn = document.querySelector('#decimal-btn');
 
 // Button event listeners
 numberBtns.forEach((button) => {
@@ -46,6 +49,7 @@ operatorBtns.forEach((button) => {
                expression.operand1 = expression.prevResult;
             }
             resetOn = true;
+            decimalBtn.disabled = false;
          }
       }
    });
@@ -67,6 +71,11 @@ clearBtn.addEventListener('click', ()  => {
    displayText.textContent = displayVal;
 });
 
+decimalBtn.addEventListener('click', () => {
+   populateDisplay(decimalBtn.textContent);
+   decimalBtn.disabled = true;
+})
+
 function populateDisplay(num) {
    if (resetOn) {
       displayVal = EMPTY_DISPLAY_VALUE;
@@ -75,7 +84,8 @@ function populateDisplay(num) {
    if (expression.prevResult !== undefined) {
       expression.prevResult = undefined;
    }
-   if (displayVal === DEFAULT_DISPLAY_VALUE && expression.operand1 === undefined) {
+   if (displayVal === DEFAULT_DISPLAY_VALUE && expression.operand1 === undefined
+       && num !== '.') {
       displayVal = num;
    }
    else {
@@ -113,6 +123,7 @@ function updateCalc() {
    expression.operator = undefined;
    expression.prevResult = +displayVal;
    resetOn = true;
+   decimalBtn.disabled = false;
 }
 
 function clear() {
