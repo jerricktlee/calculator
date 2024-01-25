@@ -62,12 +62,7 @@ equalBtn.addEventListener('click', () => {
 
 clearBtn.addEventListener('click', ()  => {
    // Clears expression memory
-   expression.operand1 = undefined;
-   expression.operand2 = undefined;
-   expression.operator = undefined;
-   expression.prevResult = undefined;
-
-   displayVal = DEFAULT_DISPLAY_VALUE;
+   clear();
    displayText.textContent = displayVal;
 });
 
@@ -97,7 +92,14 @@ function updateCalc() {
    expression.operator = undefined;
    expression.prevResult = +displayVal;
    resetOn = true;
+}
 
+function clear() {
+   expression.operand1 = undefined;
+   expression.operand2 = undefined;
+   expression.operator = undefined;
+   expression.prevResult = undefined;
+   displayVal = DEFAULT_DISPLAY_VALUE;
 }
 
 function operate(operator, operand1, operand2) {
@@ -113,6 +115,11 @@ function operate(operator, operand1, operand2) {
          result = multiply(operand1, operand2);
          break;
       case '/':
+         if (operand2 === 0) {
+            clear();
+            displayText.textContent = "N/A";
+            return;
+         }
          result = divide(operand1, operand2);
          break; 
       default:
