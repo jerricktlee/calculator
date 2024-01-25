@@ -9,6 +9,7 @@ let expression = {
    prevResult: undefined,
 };
 let displayVal = DEFAULT_DISPLAY_VALUE;
+let resetOn = false;
 
 const displayText = document.querySelector('#display-text'); 
 const numberBtns = document.querySelectorAll('.number-btn');
@@ -26,27 +27,33 @@ numberBtns.forEach((button) => {
 
 operatorBtns.forEach((button) => {
    button.addEventListener('click', () => {
-      expression.operator = button.textContent;
-      if (expression.operand1 === undefined){
-         if (expression.prevResult === undefined) {
+      if (expression.operator !== undefined) {
+         expression.operand2 = +displayVal;
+         if (operate(expression.operator, expression.operand1, expression.operand2)) {
+            updateCalc();
             expression.operand1 = +displayVal;
+            expression.operator = button.textContent;
          }
-         else {
-            expression.operand1 = expression.prevResult;
+      } else {
+         expression.operator = button.textContent;
+         if (expression.operand1 === undefined){
+            if (expression.prevResult === undefined) {
+               expression.operand1 = +displayVal;
+            }
+            else {
+               // memory component, allows the most recent result to be used
+               expression.operand1 = expression.prevResult;
+            }
+            resetOn = true;
          }
-         displayVal = EMPTY_DISPLAY_VALUE;
-      } 
+      }
    });
 })
 
 equalBtn.addEventListener('click', () => {
    expression.operand2 = +displayVal;
    if (operate(expression.operator, expression.operand1, expression.operand2)) {
-      displayText.textContent = displayVal;
-      expression.operand1 = undefined;
-      expression.operand2 = undefined;
-      expression.operator = undefined;
-      expression.prevResult = displayVal;
+      updateCalc();
    }
 })
 
@@ -64,13 +71,30 @@ clearBtn.addEventListener('click', ()  => {
 
 
 function populateDisplay(num) {
-   if (displayVal == DEFAULT_DISPLAY_VALUE && expression.operand1 === undefined) {
+   if (resetOn) {
+      displayVal = EMPTY_DISPLAY_VALUE;
+      resetOn = false;
+   }
+   if (expression.prevResult !== undefined) {
+      expression.prevResult = undefined;
+   }
+   if (displayVal === DEFAULT_DISPLAY_VALUE && expression.operand1 === undefined) {
       displayVal = num;
    }
    else {
       displayVal += num;
    }
    displayText.textContent = displayVal;
+}
+
+function updateCalc() {
+   displayText.textContent = displayVal;
+   expression.operand1 = undefined;
+   expression.operand2 = undefined;
+   expression.operator = undefined;
+   expression.prevResult = +displayVal;
+   resetOn = true;
+
 }
 
 function operate(operator, operand1, operand2) {
@@ -118,10 +142,13 @@ function divide(operand1, operand2) {
 /* Notes:
 Things to work on:
 
+Next step, pressing an operation again after the first calculation
+
 Need to truncate and limit the numbers
 9 decimal places
 
 After the first calculation:
 - New numbers should reset the display
 - Pressing another operator should store the current displayVal as operand1 val.
+
 */
