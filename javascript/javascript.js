@@ -41,7 +41,7 @@ operatorBtns.forEach((button) => {
                expression.operand1 = +displayVal;
             }
             else {
-               // memory component, allows the most recent result to be used
+               // memory component, allows most recent result to be used
                expression.operand1 = expression.prevResult;
             }
             resetOn = true;
@@ -51,6 +51,9 @@ operatorBtns.forEach((button) => {
 })
 
 equalBtn.addEventListener('click', () => {
+   if (expression.operand1 === undefined || expression.operator === undefined) { 
+      return; 
+   }
    expression.operand2 = +displayVal;
    if (operate(expression.operator, expression.operand1, expression.operand2)) {
       updateCalc();
@@ -142,13 +145,6 @@ function divide(operand1, operand2) {
 /* Notes:
 Things to work on:
 
-Next step, pressing an operation again after the first calculation
-
 Need to truncate and limit the numbers
 9 decimal places
-
-After the first calculation:
-- New numbers should reset the display
-- Pressing another operator should store the current displayVal as operand1 val.
-
 */
