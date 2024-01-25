@@ -20,6 +20,7 @@ const equalBtn = document.querySelector('#equal-btn');
 const clearBtn = document.querySelector('#clear-btn');
 const decimalBtn = document.querySelector('#decimal-btn');
 const delBtn = document.querySelector('#del-btn');
+const signChangeBtb = document.querySelector('#sign-change-btn');
 
 
 // Keyboard event Listeners
@@ -83,6 +84,16 @@ decimalBtn.addEventListener('click', () => {
 })
 
 delBtn.addEventListener('click', () => handleDeleteBtn());
+
+signChangeBtb.addEventListener('click', () => {
+   if (!resetOn && +displayVal !== 0) {
+      displayVal = (+displayVal) * (-1);
+      displayText.textContent = displayVal;
+   }
+   else {
+      populateDisplay('-');
+   }
+});
 
 function populateDisplay(num) {
    if (resetOn) {
